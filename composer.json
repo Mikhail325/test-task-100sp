@@ -1,0 +1,17 @@
+{
+    "name": "mikail325/test-task-100sp",
+    "description": "parsing the shopping list 100sp",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mikail325\\TestTask100sp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail Suhanov",
+            "email": "miklsuhanov@gmail.com"
+        }
+    ],
+    "require": {}
+}
