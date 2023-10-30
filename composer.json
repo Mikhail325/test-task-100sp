@@ -13,7 +13,10 @@
             "email": "miklsuhanov@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "guzzlehttp/guzzle": "^7.0",
+        "imangazaliev/didom": "^2.0"
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7"
     }
