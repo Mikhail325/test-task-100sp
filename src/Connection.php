@@ -2,8 +2,6 @@
 
 namespace Mikail325\TestTask100sp;
 
-use Illuminate\Support\Arr;
-
 final class Connection
 {
     public static function connect(): \PDO
@@ -13,7 +11,7 @@ final class Connection
             $databaseUrl = parse_url($_ENV['DATABASE_URL']);
         } else {
             /** @var  array{user: string, pass: string, host: string, port: string, path: string} $databaseUrl */
-            $databaseUrl = parse_ini_file('../config/database.ini');
+            $databaseUrl = parse_ini_file('config/database.ini');
         }
         $username = $databaseUrl['user'];//
         $password = $databaseUrl['pass'];

@@ -51,5 +51,6 @@ class Parsing
                     ]);
             }
         }
+        print_r('completed');
     }
 }
