@@ -35,7 +35,8 @@ class RepositoryDB
 
     public function setPurchas($purchase): void
     {
-        $sql = 'INSERT INTO purchases (type_id, citi_id, name, url_foto, url, created_at) VALUES (:type_id, :citi_id, :name, :url_foto, :url, :created_at)';
+        $sql = 'INSERT INTO purchases (type_id, citi_id, name, url_foto, url, created_at) 
+            VALUES (:type_id, :citi_id, :name, :url_foto, :url, :created_at)';
         $sqlRequest = $this->pdo->prepare($sql);
         $sqlRequest->execute([
             'type_id' => $purchase['idType'],
