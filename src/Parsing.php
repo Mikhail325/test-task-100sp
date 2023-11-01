@@ -66,7 +66,14 @@ class Parsing
                     $this->repositoryDB->setPurchas($purchaseDB);
                 }
             }
-            print_r('completed');
         }
+        print_r('completed');
+    }
+
+    public function getLastPurchasesInCity($citi): array
+    {
+        $data = $this->repositoryDB->get5LastRecords($citi);
+        print_r($data);
+        return $data;
     }
 }
