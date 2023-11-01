@@ -32,4 +32,6 @@ export DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb
 ### Инструкции по установке и запуску
 
 Для установки зависимостей используйте команду **make install**.
+Для добавления других городов добавте в масив *cities* в файле bin/parsingPurchases.
 Для запуска программы используйте команду **make start** результат работы будет хранится в базе данных в таблицах type_purchases, purchases.
+Для измения выдачи результатов по городу замените значение переменой *citi* в файле bin/parsingPurchases.
