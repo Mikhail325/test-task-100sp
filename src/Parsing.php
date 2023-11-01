@@ -4,53 +4,69 @@ namespace Mikail325\TestTask100sp;
 
 use GuzzleHttp\Client;
 use DiDom\Document;
+use Mikail325\TestTask100sp\RepositoryDB;
 
 class Parsing
 {
-    private $pdo;
+    private $repositoryDB;
+    public $cities = [];
 
-    public function __construct($pdo)
+    public function __construct(\PDO $pdo)
     {
-        $this->pdo = $pdo;
+        $this->repositoryDB = new RepositoryDB($pdo);
+    }
+
+    public function setCities(string $citi): void
+    {
+        $this->cities[] = $citi;
+    }
+
+    public function getCities(): array
+    {
+        return $this->cities;
+    }
+
+    private function checkingIfCities(): void
+    {
+        if (empty($this->cities)) {
+            throw new \Exception('Add a city');
+        }
     }
 
     public function parsing(): void
     {
-        $url = 'https://www.100sp.ru/vladivostok';
-        $client = new Client();
-        $response = $client->request('GET', $url);
-        $html = $response->getBody()->getContents();
+        $this->checkingIfCities();
 
-        $document = new Document();
-        $document->loadHtml($html);
+        foreach ($this->cities as $keyCiti => $citi) {
+            $url = 'https://www.100sp.ru/' . $citi;
 
-        $typesPurchas = $document->find('div.purchases h2 a');
-        $purchases = $document->find('div.span12 div.purchase-block');
+            $client = new Client();
+            $response = $client->request('GET', $url);
+            $html = $response->getBody()->getContents();
 
-        foreach ($typesPurchas as $keyType => $type) {
-            $typeName = $type->text();
+            $document = new Document();
+            $document->loadHtml($html);
 
-            $sql = 'INSERT INTO type_purchases (name) VALUES (:name)';
-                    $sqlRequest = $this->pdo->prepare($sql);
-                    $sqlRequest->execute([
-                        'name' => $typeName
-                    ]);
-            foreach ($purchases as $purchase) {
-                $idType = $keyType + 1;
-                $url = 'https://www.100sp.ru' . $purchase->first('div.picture a')->href;
-                $urlFoto = $purchase->first('div.picture img')->attr('data-src');
-                $name = $purchase->first('div.properties div.name a')->text();
+            $citiName = $document->first('a.city-selector-widget-link')->text();
+            $this->repositoryDB->setCities($citiName);
 
-                $sql = 'INSERT INTO purchases (type_id, name, url_foto, url) VALUES (:type_id, :name, :url_foto, :url)';
-                    $sqlRequest = $this->pdo->prepare($sql);
-                    $sqlRequest->execute([
-                        'type_id' => $idType,
-                        'name' => $name,
-                        'url_foto' => $urlFoto,
-                        'url' => $url
-                    ]);
+            $typesPurchas = $document->find('div.purchases h2 a');
+            $purchases = $document->find('div.span12 div.purchase-block');
+
+            foreach ($typesPurchas as $keyType => $type) {
+                $typeName = $type->text();
+                $this->repositoryDB->setTypesPurchas($typeName);
+
+                foreach ($purchases as $purchase) {
+                    $purchaseDB['idType'] = $keyType + 1;
+                    $purchaseDB['idCiti'] = $keyCiti + 1;
+                    $purchaseDB['url'] = 'https://www.100sp.ru' . $purchase->first('div.picture a')->href;
+                    $purchaseDB['urlFoto'] = $purchase->first('div.picture img')->attr('data-src');
+                    $purchaseDB['name'] = $purchase->first('div.properties div.name a')->text();
+                    $this->repositoryDB->setPurchas($purchaseDB);
+                }
             }
+            print_r('completed');
         }
-        print_r('completed');
     }
 }
