@@ -18,4 +18,6 @@ $pdo = Connection::connect();
 Migration::migrate($pdo);
 
 $analysis = new Parsing($pdo);
+$cities = ['vladivostok', 'artem', 'ussuriysk'];
+array_map(fn($citi) => $analysis->setCities($citi),$cities);
 $analysis->parsing();
