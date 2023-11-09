@@ -37,7 +37,7 @@ class Parsing
     {
         $this->checkingIfCities();
 
-        foreach ($this->cities as $keyCiti => $citi) {
+        foreach ($this->cities as $citi) {
             $url = 'https://www.100sp.ru/' . $citi;
 
             $client = new Client();
@@ -53,13 +53,13 @@ class Parsing
             $typesPurchas = $document->find('div.purchases h2 a');
             $purchases = $document->find('div.span12 div.purchase-block');
 
-            foreach ($typesPurchas as $keyType => $type) {
+            foreach ($typesPurchas as $type) {
                 $typeName = $type->text();
                 $this->repositoryDB->setTypesPurchas($typeName);
 
                 foreach ($purchases as $purchase) {
-                    $purchaseDB['idType'] = $keyType + 1;
-                    $purchaseDB['idCiti'] = $keyCiti + 1;
+                    $purchaseDB['idType'] = $this->repositoryDB->getIdTypesPurchas($typeName);
+                    $purchaseDB['idCiti'] = $this->repositoryDB->getIdCiti($citiName);
                     $purchaseDB['url'] = 'https://www.100sp.ru' . $purchase->first('div.picture a')->href;
                     $purchaseDB['urlFoto'] = $purchase->first('div.picture img')->attr('data-src');
                     $purchaseDB['name'] = $purchase->first('div.properties div.name a')->text();
