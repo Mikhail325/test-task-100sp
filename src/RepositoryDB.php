@@ -23,6 +23,16 @@ class RepositoryDB
         ]);
     }
 
+    public function getIdCiti($citi)
+    {
+        $sql = 'SELECT id FROM cities WHERE name = :citi;';
+        $sqlRequest = $this->pdo->prepare($sql);
+        $sqlRequest->execute([
+            'citi' => $citi
+        ]);
+        return $sqlRequest->fetch(\PDO::FETCH_COLUMN, 0);
+    }
+
     public function setTypesPurchas($typeName): void
     {
         $sql = 'INSERT INTO type_purchases (name, created_at) VALUES (:name, :created_at)';
@@ -31,6 +41,16 @@ class RepositoryDB
             'name' => $typeName,
             'created_at' => Carbon::now()
         ]);
+    }
+
+    public function getIdTypesPurchas($type)
+    {
+        $sql = 'SELECT id FROM type_purchases WHERE name = :type;';
+        $sqlRequest = $this->pdo->prepare($sql);
+        $sqlRequest->execute([
+            'type' => $type
+        ]);
+        return $sqlRequest->fetch(\PDO::FETCH_COLUMN, 0);
     }
 
     public function setPurchas($purchase): void
@@ -60,10 +80,13 @@ class RepositoryDB
                     purchases.created_at
                 FROM cities, purchases, type_purchases
                 WHERE cities.id = purchases.citi_id
-                    and cities.name = '$citi'
+                    and cities.name = :citi
                 ORDER BY purchases.created_at DESC
                 LIMIT 5;";
-        $statement = $this->pdo->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_CLASS);
+        $sqlRequest = $this->pdo->prepare($sql);
+        $sqlRequest->execute([
+            'citi' => $citi
+        ]);
+        return $sqlRequest->fetchAll(\PDO::FETCH_CLASS);
     }
 }
